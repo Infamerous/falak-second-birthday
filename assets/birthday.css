@@ -119,14 +119,6 @@ body.no-trail{ cursor: auto; }
   100%{ opacity: 0; transform: translate(var(--drift, 0px), -90px) scale(.8); }
 }
 
-.heart-wrap.burst{ animation: heartBurst 2.2s ease-out forwards; }
-@keyframes heartBurst{
-  0%{ opacity: 0; transform: translate(-50%, -20%) scale(.3); }
-  15%{ opacity: 1; transform: translate(-50%, calc(-20% - 10px)) scale(1.05); }
-  65%{ opacity: 1; transform: translate(-50%, calc(-20% - 110px)) scale(1); }
-  82%{ opacity: 1; transform: translate(-50%, calc(-20% - 150px)) scale(1.35); }
-  100%{ opacity: 0; transform: translate(-50%, calc(-20% - 160px)) scale(.15); }
-}
 
 .chart-core .meaning{
   font-family: 'Newsreader', serif; font-style: italic;

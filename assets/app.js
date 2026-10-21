@@ -139,18 +139,24 @@
     setTimeout(() => wrap.remove(), 1800);
   }
 
-  function spawnBurstHeart(h1){
+  function spawnHeartBurst(h1){
     const rect = h1.getBoundingClientRect();
-    const size = 64;
-    const wrap = document.createElement('div');
-    wrap.className = 'heart-wrap burst';
-    wrap.style.width = size + 'px';
-    wrap.style.height = size + 'px';
-    wrap.style.left = (rect.left + rect.width / 2) + 'px';
-    wrap.style.top = rect.bottom + 'px';
-    wrap.innerHTML = heartSVG(true);
-    document.body.appendChild(wrap);
-    setTimeout(() => wrap.remove(), 2300);
+    const count = 7;
+    for (let i = 0; i < count; i++){
+      setTimeout(() => {
+        const wrap = document.createElement('div');
+        wrap.className = 'heart-wrap floating';
+        const size = 46 + Math.random() * 22;
+        wrap.style.width = size + 'px';
+        wrap.style.height = size + 'px';
+        wrap.style.left = (rect.left + Math.random() * rect.width) + 'px';
+        wrap.style.top = (rect.top + rect.height * (0.2 + Math.random() * 0.6)) + 'px';
+        wrap.style.setProperty('--drift', (Math.random() * 70 - 35) + 'px');
+        wrap.innerHTML = heartSVG(true);
+        document.body.appendChild(wrap);
+        setTimeout(() => wrap.remove(), 1800);
+      }, i * 40);
+    }
   }
 
   function initFalakHearts(){
@@ -169,7 +175,7 @@
       if (spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
     });
 
-    h1.addEventListener('click', () => spawnBurstHeart(h1));
+    h1.addEventListener('click', () => spawnHeartBurst(h1));
   }
 
   function init(){
