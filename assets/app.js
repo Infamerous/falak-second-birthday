@@ -3,8 +3,13 @@
   const imageFiles = [
     'IMG_1674.PNG', 'IMG_1676.PNG', 'IMG_1678.PNG',
     'IMG_1679.PNG', 'IMG_1681.PNG', 'IMG_1682.PNG', 'IMG_1683.PNG',
-    'IMG_1684.PNG', 'IMG_1685.PNG', 'IMG_1686.PNG'
+    'IMG_1684.PNG', 'IMG_1685.PNG', 'IMG_1686.PNG',
+    'Screenshot 2026-10-21 180942.png', 'Screenshot 2026-10-21 181059.png',
+    'Screenshot 2026-10-21 181113.png', 'Screenshot 2026-10-21 181121.png',
+    'Screenshot 2026-10-21 181128.png', 'Screenshot 2026-10-21 181154.png'
   ];
+
+  function pictureUrl(file){ return basePath + encodeURIComponent(file); }
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -28,7 +33,7 @@
     if (!track) return;
     files.concat(files).forEach((file) => {
       const img = document.createElement('img');
-      img.src = basePath + file;
+      img.src = pictureUrl(file);
       img.alt = 'A memory from this year';
       img.loading = 'lazy';
       track.appendChild(img);
@@ -66,7 +71,7 @@
     wrap.style.top = (y - PHOTO_SIZE * 0.6) + 'px';
 
     const img = document.createElement('img');
-    img.src = basePath + imageFiles[Math.floor(Math.random() * imageFiles.length)];
+    img.src = pictureUrl(imageFiles[Math.floor(Math.random() * imageFiles.length)]);
     wrap.appendChild(img);
 
     document.body.appendChild(wrap);
@@ -182,8 +187,8 @@
         wrap.style.left = x + 'px';
         wrap.style.top = y + 'px';
         wrap.style.setProperty('--drift', (Math.random() * 30 - 15) + 'px');
-        const imgUrl = basePath + imageFiles[Math.floor(Math.random() * imageFiles.length)];
-        wrap.innerHTML = heartImageSVG(imgUrl);
+        const photoUrl = pictureUrl(imageFiles[Math.floor(Math.random() * imageFiles.length)]);
+        wrap.innerHTML = heartImageSVG(photoUrl);
         document.body.appendChild(wrap);
         setTimeout(() => wrap.remove(), 1900);
       }, Math.random() * 500);

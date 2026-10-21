@@ -194,9 +194,14 @@ body.no-trail{ cursor: auto; }
 .marquee-track img{
   width: 220px; height: 280px; object-fit: cover; flex-shrink: 0; border-radius: 3px;
   filter: grayscale(1) contrast(1.05) brightness(.95);
-  transition: filter .4s ease;
+  position: relative; z-index: 1;
+  transition: filter .4s ease, transform .4s ease;
 }
-.marquee-track img:hover{ filter: none; }
+.marquee-track img:hover{
+  filter: none;
+  transform: scale(1.18);
+  z-index: 3;
+}
 
 @media (max-width: 640px){
   .marquee-track img{ width: 150px; height: 190px; }
