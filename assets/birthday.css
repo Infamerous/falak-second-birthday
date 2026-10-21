@@ -111,7 +111,7 @@ body.no-trail{ cursor: auto; }
   content: ''; position: absolute; width: 100%; height: 100%;
   border-radius: 50%; background: var(--love);
 }
-.heart::before{ left: -50%; }
+.heart::before{ left: 50%; }
 .heart::after{ top: -50%; }
 
 .heart-wrap.floating{ animation: heartFloat 1.8s ease-out forwards; }
