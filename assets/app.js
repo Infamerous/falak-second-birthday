@@ -111,6 +111,19 @@
     if (heroChart) requestAnimationFrame(() => setTimeout(() => heroChart.classList.add('is-visible'), 80));
   }
 
+  function heartSVG(withFace){
+    const face = withFace
+      ? '<circle cx="24" cy="23" r="2.4" fill="var(--void)"/>'
+        + '<circle cx="40" cy="23" r="2.4" fill="var(--void)"/>'
+        + '<path d="M28 31 Q32 36 36 31" stroke="var(--void)" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
+      : '';
+    return '<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">'
+      + '<path d="M32 50 C10 34 4 18 16 10 C24 5 32 10 32 16 C32 10 40 5 48 10 C60 18 54 34 32 50 Z" '
+      + 'fill="var(--love)" stroke="var(--starlight)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'
+      + face
+      + '</svg>';
+  }
+
   function spawnFloatingHeart(h1){
     const rect = h1.getBoundingClientRect();
     const wrap = document.createElement('div');
@@ -121,9 +134,7 @@
     wrap.style.left = (rect.left + Math.random() * rect.width) + 'px';
     wrap.style.top = (rect.top + rect.height * (0.3 + Math.random() * 0.4)) + 'px';
     wrap.style.setProperty('--drift', (Math.random() * 40 - 20) + 'px');
-    const inner = document.createElement('div');
-    inner.className = 'heart';
-    wrap.appendChild(inner);
+    wrap.innerHTML = heartSVG(false);
     document.body.appendChild(wrap);
     setTimeout(() => wrap.remove(), 1800);
   }
@@ -136,12 +147,10 @@
     wrap.style.width = size + 'px';
     wrap.style.height = size + 'px';
     wrap.style.left = (rect.left + rect.width / 2) + 'px';
-    wrap.style.top = (rect.top + rect.height / 2) + 'px';
-    const inner = document.createElement('div');
-    inner.className = 'heart';
-    wrap.appendChild(inner);
+    wrap.style.top = rect.bottom + 'px';
+    wrap.innerHTML = heartSVG(true);
     document.body.appendChild(wrap);
-    setTimeout(() => wrap.remove(), 1700);
+    setTimeout(() => wrap.remove(), 2300);
   }
 
   function initFalakHearts(){
