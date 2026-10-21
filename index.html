@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Falak</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --void: #000000;
+    --brass: #FFFFFF;
+    --brass-dim: #555555;
+    --ink: #A0A0A0;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    background: var(--void); color: #F6F6F6;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .gate{ text-align: center; max-width: 320px; width: 100%; }
+
+  .gate .eyebrow{
+    display: block; font-size: .7rem; letter-spacing: .32em;
+    text-transform: uppercase; color: var(--brass); margin-bottom: 1.1rem;
+  }
+
+  .gate h1{
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(1.9rem, 7vw, 2.5rem); margin-bottom: 1.8rem; line-height: 1.15;
+  }
+
+  .gate form{ display: flex; flex-direction: column; gap: .9rem; }
+
+  .gate input{
+    background: transparent; border: 1px solid var(--brass-dim); color: #fff;
+    padding: .8rem 1rem; font-size: 1rem; letter-spacing: .08em; text-align: center;
+    border-radius: 2px; font-family: 'Inter', sans-serif;
+  }
+  .gate input:focus{ outline: none; border-color: var(--brass); }
+
+  .gate button{
+    background: var(--brass); color: #000; border: none;
+    padding: .8rem 1rem; font-family: 'Inter', sans-serif; font-weight: 600;
+    letter-spacing: .15em; text-transform: uppercase; font-size: .72rem;
+    border-radius: 2px; cursor: pointer; transition: opacity .2s;
+  }
+  .gate button:hover{ opacity: .85; }
+
+  .gate .error{
+    font-size: .78rem; color: var(--ink); min-height: 1.2em; margin-top: .3rem;
+  }
+
+  .gate.shake{ animation: shake .35s; }
+  @keyframes shake{
+    0%, 100%{ transform: translateX(0); }
+    25%{ transform: translateX(-8px); }
+    75%{ transform: translateX(8px); }
+  }
+</style>
+</head>
+<body>
+  <div class="gate" id="gate">
+    <span class="eyebrow">Falak</span>
+    <h1>This one's locked.</h1>
+    <form id="gateForm" autocomplete="off">
+      <input type="password" id="passInput" placeholder="Enter the passphrase" autofocus />
+      <button type="submit">Open</button>
+      <p class="error" id="gateError"></p>
+    </form>
+  </div>
+
+  <script>
+  (function(){
+    const HASH = '4cbc94725af76cc0347cd3ed31524a937d4182f3c83641d7d67d61b3959c1a96';
+
+    async function sha256(text){
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    if (sessionStorage.getItem('falak_unlocked') === 'true') {
+      location.replace('birthday.html');
+      return;
+    }
+
+    const form = document.getElementById('gateForm');
+    const input = document.getElementById('passInput');
+    const error = document.getElementById('gateError');
+    const gate = document.getElementById('gate');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const value = input.value.trim();
+      if (!value) return;
+
+      const digest = await sha256(value);
+      if (digest === HASH) {
+        sessionStorage.setItem('falak_unlocked', 'true');
+        location.replace('birthday.html');
+      } else {
+        error.textContent = 'Not quite — try again.';
+        gate.classList.remove('shake');
+        requestAnimationFrame(() => gate.classList.add('shake'));
+        input.value = '';
+        input.focus();
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

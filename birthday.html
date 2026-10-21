@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<script>
+  if (sessionStorage.getItem('falak_unlocked') !== 'true') {
+    location.replace('index.html');
+  }
+</script>
+<title>Falak</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Newsreader:ital,wght@0,400;1,400;1,500&family=Inter:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --void: #000000;        /* page background */
+  --deep: #0A0A0A;
+  --panel: #0F0F0F;       /* letter section background */
+  --brass: #FFFFFF;       /* main accent — was gold, now white */
+  --brass-dim: #555555;   /* was dim gold — now grey */
+  --parchment: #E8E8E8;   /* was cream — now light grey */
+  --starlight: #F6F6F6;
+  --ink: #A0A0A0;         /* body text grey */
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
+  }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--void);
+    color: var(--starlight);
+    font-family: 'Newsreader', serif;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  body.no-trail{ cursor: auto; }
+
+  /* subtle film grain, keeps the dark field from feeling like a flat gradient */
+  .grain{
+    position: fixed; inset: 0; z-index: 3; pointer-events: none;
+    opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .progress-bar{
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: var(--brass); z-index: 1000; transition: width .1s ease-out;
+  }
+
+  .section{
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 5rem 1.5rem; overflow: hidden;
+  }
+
+  .eyebrow{
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: .72rem; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--brass);
+  }
+
+  /* ===== star field (ambient, not falling dust) ===== */
+  .star-field{ position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .star{
+    position: absolute; width: 2px; height: 2px; border-radius: 50%;
+    background: var(--starlight); animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%, 100%{ opacity: .15; }
+    50%{ opacity: .75; }
+  }
+  .star-field.static .star{ animation: none; opacity: .35; }
+
+  /* decorative corner constellations in the hero */
+  .constellation{ position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .4; }
+  .constellation line, .constellation circle{ stroke: var(--brass-dim); }
+  .constellation circle{ fill: var(--brass-dim); }
+
+  /* ===== hero ===== */
+  .section-hero{ flex-direction: column; gap: 2.4rem; }
+
+  .chart{
+    position: relative; z-index: 5;
+    width: clamp(280px, 48vw, 400px);
+    height: clamp(280px, 48vw, 400px);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .ring-ticks{
+    position: absolute; inset: 0; border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, var(--brass-dim) 0deg 1.1deg, transparent 1.1deg 15deg);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%, #000 67%, transparent 68%);
+            mask: radial-gradient(circle, transparent 60%, #000 61%, #000 67%, transparent 68%);
+    opacity: .6;
+  }
+
+  .ring-label{ position: absolute; inset: 0; }
+  .ring-label text{
+    fill: var(--brass); font-family: 'Inter', sans-serif;
+    font-size: 10.5px; font-weight: 600; letter-spacing: .3em;
+  }
+
+  .chart-core{
+    position: relative; text-align: center; max-width: 76%;
+    display: flex; flex-direction: column; gap: .9rem; align-items: center;
+  }
+
+  .chart-core h1{
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(2.6rem, 9vw, 4.2rem);
+    letter-spacing: .01em; color: var(--starlight); line-height: 1;
+  }
+
+  .chart-core .meaning{
+    font-family: 'Newsreader', serif; font-style: italic;
+    font-size: clamp(.92rem, 1.6vw, 1.05rem);
+    color: var(--ink); line-height: 1.5;
+  }
+  .chart-core .meaning em{ color: var(--brass); font-style: italic; }
+
+  .scroll-hint{
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    z-index: 5; pointer-events: none;
+  }
+  .scroll-hint span{
+    font-family: 'Inter', sans-serif; font-size: .65rem; letter-spacing: .3em;
+    text-transform: uppercase; color: var(--ink);
+  }
+  .scroll-hint .thread{
+    width: 1px; height: 30px; background: var(--brass-dim);
+    animation: threadPulse 2.6s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes threadPulse{
+    0%, 100%{ opacity: .3; transform: scaleY(.6); }
+    50%{ opacity: .9; transform: scaleY(1); }
+  }
+
+  /* ===== letter ===== */
+  .section-letter{ background: var(--panel); }
+  .letter{
+    max-width: 620px; z-index: 5; position: relative;
+    font-family: 'Newsreader', serif; font-size: clamp(1.05rem, 1.6vw, 1.22rem);
+    line-height: 1.85; color: var(--parchment);
+  }
+  .letter p{ margin-bottom: 1.4rem; }
+  .letter p:first-of-type::first-letter{
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 3.2em;
+    color: var(--brass); float: left; line-height: .78; margin: .04em .1em 0 0;
+  }
+  .letter .cue{
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: .72rem;
+    letter-spacing: .25em; text-transform: uppercase; color: var(--brass);
+    margin-top: 2rem;
+  }
+
+  /* ===== gallery: two rows sliding in opposite directions ===== */
+  .section-gallery{ flex-direction: column; gap: 2.8rem; padding: 6rem 0 7rem; overflow: hidden; }
+
+  .marquee-row{
+    width: 100vw; overflow: hidden; position: relative; z-index: 5;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  }
+  .marquee-track{
+    display: flex; gap: 18px; width: max-content; will-change: transform;
+  }
+  .marquee-track.to-right{ animation: slideToRight 46s linear infinite; }
+  .marquee-track.to-left{ animation: slideToLeft 52s linear infinite; }
+  .marquee-row:hover .marquee-track{ animation-play-state: paused; }
+
+  @keyframes slideToLeft{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+  @keyframes slideToRight{ from{ transform: translateX(-50%); } to{ transform: translateX(0); } }
+
+  .marquee-track img{
+    width: 220px; height: 280px; object-fit: cover; flex-shrink: 0; border-radius: 3px;
+    filter: grayscale(1) contrast(1.05) brightness(.95);
+    transition: filter .4s ease;
+  }
+  .marquee-track img:hover{ filter: none; }
+
+  @media (max-width: 640px){
+    .marquee-track img{ width: 150px; height: 190px; }
+  }
+
+  /* ===== scroll reveal ===== */
+  .reveal{ opacity: 0; transform: translateY(50px); transition: opacity .9s ease-out, transform .9s cubic-bezier(.2,.8,.2,1); }
+  .reveal.is-visible{ opacity: 1; transform: translateY(0); }
+
+  .reveal-stagger > *{ opacity: 0; transform: translateY(30px); transition: opacity .7s ease-out, transform .7s cubic-bezier(.2,.8,.2,1); }
+  .reveal-stagger.is-visible > *{ opacity: 1; transform: translateY(0); }
+  .reveal-stagger.is-visible > *:nth-child(1){ transition-delay: .05s; }
+  .reveal-stagger.is-visible > *:nth-child(2){ transition-delay: .18s; }
+  .reveal-stagger.is-visible > *:nth-child(3){ transition-delay: .31s; }
+  .reveal-stagger.is-visible > *:nth-child(4){ transition-delay: .44s; }
+
+  /* ===== cursor trail ===== */
+  .trail-dot{
+    position: fixed; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--brass); pointer-events: none; z-index: 998;
+    opacity: 0; animation: dotFade .7s ease-out forwards;
+  }
+  @keyframes dotFade{
+    0%{ opacity: .85; transform: scale(1); }
+    100%{ opacity: 0; transform: scale(.4); }
+  }
+
+  .trail-photo{
+    position: fixed; pointer-events: none; z-index: 999;
+    opacity: 0; animation: photoFade 1.3s ease-out forwards;
+    will-change: transform, opacity;
+  }
+  .trail-photo img{
+    display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 3px;
+    filter: grayscale(1) contrast(1.05) brightness(.95) drop-shadow(0 8px 16px rgba(0,0,0,.6));
+  }
+  @keyframes photoFade{
+    0%{ opacity: 0; transform: scale(.75) rotate(var(--tilt, 0deg)); }
+    15%{ opacity: .95; transform: scale(1) rotate(var(--tilt, 0deg)); }
+    70%{ opacity: .7; transform: scale(.97) rotate(var(--tilt, 0deg)); }
+    100%{ opacity: 0; transform: scale(.6) rotate(var(--tilt, 0deg)); }
+  }
+
+  @media (max-width: 640px){
+    .letter p:first-of-type::first-letter{ font-size: 2.6em; }
+  }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="star-field" id="starField"></div>
+
+  <!-- ===== HERO ===== -->
+  <section class="section section-hero">
+    <svg class="constellation" aria-hidden="true">
+      <line x1="8%" y1="18%" x2="18%" y2="10%" />
+      <line x1="18%" y1="10%" x2="27%" y2="20%" />
+      <circle cx="8%" cy="18%" r="2" />
+      <circle cx="18%" cy="10%" r="2" />
+      <circle cx="27%" cy="20%" r="2" />
+      <line x1="82%" y1="80%" x2="92%" y2="86%" />
+      <line x1="92%" y1="86%" x2="88%" y2="94%" />
+      <circle cx="82%" cy="80%" r="2" />
+      <circle cx="92%" cy="86%" r="2" />
+      <circle cx="88%" cy="94%" r="2" />
+    </svg>
+
+    <div class="chart reveal">
+      <div class="ring-ticks"></div>
+      <svg class="ring-label" viewBox="0 0 340 340" aria-hidden="true">
+        <defs>
+          <path id="ringPath" d="M 170,170 m -146,0 a 146,146 0 1,1 292,0 a 146,146 0 1,1 -292,0" />
+        </defs>
+        <text><textPath href="#ringPath"></textPath></text>
+      </svg>
+
+      <div class="chart-core">
+        <p class="eyebrow">Happy Birthday</p>
+        <h1>Falak</h1>
+        <p class="meaning">"To two years of being a wonder and for the following years"</p>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="thread"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ===== LETTER ===== -->
+  <section class="section section-letter">
+    <div class="letter reveal-stagger">
+      <p>Keep being cute gangg!</p>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY ===== -->
+  <section class="section section-gallery">
+    <p class="eyebrow reveal">GALLERY</p>
+    <div class="marquee-row reveal">
+      <div class="marquee-track to-left" id="marqueeTop"></div>
+    </div>
+    <div class="marquee-row reveal">
+      <div class="marquee-track to-right" id="marqueeBottom"></div>
+    </div>
+  </section>
+
+  <script>
+  (function(){
+    const basePath = './pictures/';
+    const imageFiles = [
+      'IMG_1674.PNG', 'IMG_1676.PNG', 'IMG_1678.PNG',
+      'IMG_1679.PNG', 'IMG_1681.PNG', 'IMG_1682.PNG', 'IMG_1683.PNG',
+      'IMG_1684.PNG', 'IMG_1685.PNG', 'IMG_1686.PNG'
+    ];
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ----- star field -----
+    function buildStarField(){
+      const field = document.getElementById('starField');
+      if (!field) return;
+      if (reducedMotion) field.classList.add('static');
+      for (let i = 0; i < 90; i++){
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.animationDuration = (Math.random() * 4 + 3) + 's';
+        s.style.animationDelay = (Math.random() * 4) + 's';
+        field.appendChild(s);
+      }
+    }
+
+    // ----- marquee rows (two rows sliding in opposite directions) -----
+    function fillRow(trackId, files){
+      const track = document.getElementById(trackId);
+      if (!track) return;
+      // duplicate the sequence so the -50% translate loops seamlessly
+      files.concat(files).forEach((file) => {
+        const img = document.createElement('img');
+        img.src = basePath + file;
+        img.alt = 'A memory from this year';
+        img.loading = 'lazy';
+        track.appendChild(img);
+      });
+    }
+
+    function buildMarquee(){
+      fillRow('marqueeTop', imageFiles);
+      fillRow('marqueeBottom', imageFiles.slice().reverse());
+    }
+
+    // ----- cursor trail: a thin gold line of dots, with a photo pinned every so often -----
+    let lastDotX = null, lastDotY = null;
+    let lastPhotoX = null, lastPhotoY = null;
+    const DOT_DISTANCE = 11;
+    const PHOTO_DISTANCE = 90;
+    const PHOTO_SIZE = 78;
+
+    function spawnDot(x, y){
+      const dot = document.createElement('div');
+      dot.className = 'trail-dot';
+      dot.style.left = (x - 2) + 'px';
+      dot.style.top = (y - 2) + 'px';
+      document.body.appendChild(dot);
+      setTimeout(() => dot.remove(), 700);
+    }
+
+    function spawnPhoto(x, y){
+      const wrap = document.createElement('div');
+      wrap.className = 'trail-photo';
+      const tilt = (Math.random() * 16 - 8).toFixed(1);
+      wrap.style.setProperty('--tilt', tilt + 'deg');
+      wrap.style.width = PHOTO_SIZE + 'px';
+      wrap.style.height = (PHOTO_SIZE * 1.15) + 'px';
+      wrap.style.left = (x - PHOTO_SIZE / 2) + 'px';
+      wrap.style.top = (y - PHOTO_SIZE * 0.6) + 'px';
+
+      const img = document.createElement('img');
+      img.src = basePath + imageFiles[Math.floor(Math.random() * imageFiles.length)];
+      wrap.appendChild(img);
+
+      document.body.appendChild(wrap);
+      setTimeout(() => wrap.remove(), 1300);
+    }
+
+    function onPointerMove(x, y){
+      if (lastDotX === null){ lastDotX = x; lastDotY = y; }
+      if (lastPhotoX === null){ lastPhotoX = x; lastPhotoY = y; }
+
+      const dDot = Math.hypot(x - lastDotX, y - lastDotY);
+      if (dDot >= DOT_DISTANCE){
+        spawnDot(x, y);
+        lastDotX = x; lastDotY = y;
+      }
+      const dPhoto = Math.hypot(x - lastPhotoX, y - lastPhotoY);
+      if (dPhoto >= PHOTO_DISTANCE){
+        spawnPhoto(x, y);
+        lastPhotoX = x; lastPhotoY = y;
+      }
+    }
+
+    function onMouseMove(e){ onPointerMove(e.clientX, e.clientY); }
+    function onTouchMove(e){ if (e.touches.length) onPointerMove(e.touches[0].clientX, e.touches[0].clientY); }
+    function onLeave(){ lastDotX = lastDotY = lastPhotoX = lastPhotoY = null; }
+
+    // ----- scroll progress -----
+    const progressBar = document.getElementById('progressBar');
+    function updateProgress(){
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    }
+
+    // ----- scroll reveal -----
+    function initScrollReveal(){
+      const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+      }, { threshold: .15, rootMargin: '0px 0px -8% 0px' });
+      revealEls.forEach(el => observer.observe(el));
+
+      const heroChart = document.querySelector('.section-hero .reveal');
+      if (heroChart) requestAnimationFrame(() => setTimeout(() => heroChart.classList.add('is-visible'), 80));
+    }
+
+    function init(){
+      buildStarField();
+      buildMarquee();
+      initScrollReveal();
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+
+      if (!reducedMotion){
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('touchmove', onTouchMove, { passive: true });
+        document.addEventListener('mouseleave', onLeave);
+        document.addEventListener('touchend', onLeave);
+        document.addEventListener('touchcancel', onLeave);
+      } else {
+        document.body.classList.add('no-trail');
+      }
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+  </script>
+</body>
+</html>
