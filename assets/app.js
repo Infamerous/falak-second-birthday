@@ -137,7 +137,6 @@
     return '<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">'
       + '<defs><clipPath id="' + clipId + '" clipPathUnits="userSpaceOnUse"><path d="' + HEART_PATH + '"/></clipPath></defs>'
       + '<image href="' + imgUrl + '" x="0" y="0" width="64" height="56" preserveAspectRatio="xMidYMid slice" clip-path="url(#' + clipId + ')"/>'
-      + '<path d="' + HEART_PATH + '" fill="none" stroke="var(--love)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'
       + '</svg>';
   }
 
