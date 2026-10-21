@@ -139,24 +139,36 @@
     setTimeout(() => wrap.remove(), 1800);
   }
 
-  function spawnHeartBurst(h1){
-    const rect = h1.getBoundingClientRect();
-    const count = 7;
-    for (let i = 0; i < count; i++){
+  function spawnHeartBurst(){
+    const cols = 4, rows = 3;
+    const cellW = window.innerWidth / cols;
+    const cellH = window.innerHeight / rows;
+    const cells = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push({ c, r });
+    for (let i = cells.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = cells[i]; cells[i] = cells[j]; cells[j] = tmp;
+    }
+    const count = Math.min(7, cells.length);
+    const pad = 0.28;
+
+    cells.slice(0, count).forEach((cell, i) => {
       setTimeout(() => {
+        const x = (cell.c + pad + Math.random() * (1 - 2 * pad)) * cellW;
+        const y = (cell.r + pad + Math.random() * (1 - 2 * pad)) * cellH;
         const wrap = document.createElement('div');
-        wrap.className = 'heart-wrap floating';
-        const size = 46 + Math.random() * 22;
+        wrap.className = 'heart-wrap popping';
+        const size = 42 + Math.random() * 22;
         wrap.style.width = size + 'px';
         wrap.style.height = size + 'px';
-        wrap.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        wrap.style.top = (rect.top - 10 - Math.random() * 30) + 'px';
-        wrap.style.setProperty('--drift', (Math.random() * 70 - 35) + 'px');
+        wrap.style.left = x + 'px';
+        wrap.style.top = y + 'px';
+        wrap.style.setProperty('--drift', (Math.random() * 30 - 15) + 'px');
         wrap.innerHTML = heartSVG(true);
         document.body.appendChild(wrap);
-        setTimeout(() => wrap.remove(), 1800);
-      }, i * 40);
-    }
+        setTimeout(() => wrap.remove(), 1900);
+      }, i * 70);
+    });
   }
 
   function initFalakHearts(){
@@ -175,7 +187,7 @@
       if (spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
     });
 
-    h1.addEventListener('click', () => spawnHeartBurst(h1));
+    h1.addEventListener('click', () => spawnHeartBurst());
   }
 
   function init(){
