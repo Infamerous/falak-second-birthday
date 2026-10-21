@@ -150,7 +150,7 @@
         wrap.style.width = size + 'px';
         wrap.style.height = size + 'px';
         wrap.style.left = (rect.left + Math.random() * rect.width) + 'px';
-        wrap.style.top = (rect.top + rect.height * (0.2 + Math.random() * 0.6)) + 'px';
+        wrap.style.top = (rect.top - 10 - Math.random() * 30) + 'px';
         wrap.style.setProperty('--drift', (Math.random() * 70 - 35) + 'px');
         wrap.innerHTML = heartSVG(true);
         document.body.appendChild(wrap);
