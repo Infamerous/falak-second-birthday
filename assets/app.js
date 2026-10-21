@@ -213,10 +213,81 @@
     h1.addEventListener('click', () => spawnHeartBurst());
   }
 
+  function initLetterDrawing(){
+    const section = document.querySelector('.section-letter');
+    if (!section) return;
+
+    const layer = document.createElement('div');
+    layer.className = 'draw-layer';
+    section.appendChild(layer);
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.className = 'draw-clear';
+    clearBtn.setAttribute('aria-label', 'Clear drawing');
+    clearBtn.textContent = '×';
+    section.appendChild(clearBtn);
+
+    const SPACING = 26;
+    let drawing = false;
+    let lastX = null, lastY = null;
+
+    function addMark(clientX, clientY){
+      const rect = section.getBoundingClientRect();
+      const w = 50 + Math.random() * 16;
+      const h = w * 1.2;
+      const mark = document.createElement('div');
+      mark.className = 'draw-mark';
+      mark.style.width = w + 'px';
+      mark.style.height = h + 'px';
+      mark.style.left = (clientX - rect.left - w / 2) + 'px';
+      mark.style.top = (clientY - rect.top - h / 2) + 'px';
+      mark.style.transform = 'rotate(' + (Math.random() * 16 - 8) + 'deg)';
+      const img = document.createElement('img');
+      img.src = pictureUrl(imageFiles[Math.floor(Math.random() * imageFiles.length)]);
+      mark.appendChild(img);
+      layer.appendChild(mark);
+    }
+
+    function pointOf(e){ return e.touches ? e.touches[0] : e; }
+
+    function onDown(e){
+      if (e.target.closest && e.target.closest('.draw-clear')) return;
+      drawing = true;
+      const p = pointOf(e);
+      lastX = p.clientX; lastY = p.clientY;
+      addMark(p.clientX, p.clientY);
+    }
+
+    function onMove(e){
+      if (!drawing) return;
+      const p = pointOf(e);
+      if (Math.hypot(p.clientX - lastX, p.clientY - lastY) >= SPACING){
+        addMark(p.clientX, p.clientY);
+        lastX = p.clientX; lastY = p.clientY;
+      }
+    }
+
+    function onUp(){ drawing = false; }
+
+    section.addEventListener('mousedown', onDown);
+    section.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    section.addEventListener('touchstart', onDown, { passive: true });
+    section.addEventListener('touchmove', onMove, { passive: true });
+    section.addEventListener('touchend', onUp);
+
+    clearBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      layer.innerHTML = '';
+    });
+  }
+
   function init(){
     buildStarField();
     buildMarquee();
     initScrollReveal();
+    initLetterDrawing();
     initFalakHearts();
 
     window.addEventListener('scroll', updateProgress, { passive: true });
