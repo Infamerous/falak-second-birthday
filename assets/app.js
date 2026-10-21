@@ -111,10 +111,63 @@
     if (heroChart) requestAnimationFrame(() => setTimeout(() => heroChart.classList.add('is-visible'), 80));
   }
 
+  function spawnFloatingHeart(h1){
+    const rect = h1.getBoundingClientRect();
+    const wrap = document.createElement('div');
+    wrap.className = 'heart-wrap floating';
+    const size = 14 + Math.random() * 6;
+    wrap.style.width = size + 'px';
+    wrap.style.height = size + 'px';
+    wrap.style.left = (rect.left + Math.random() * rect.width) + 'px';
+    wrap.style.top = (rect.top + rect.height * (0.3 + Math.random() * 0.4)) + 'px';
+    wrap.style.setProperty('--drift', (Math.random() * 40 - 20) + 'px');
+    const inner = document.createElement('div');
+    inner.className = 'heart';
+    wrap.appendChild(inner);
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 1800);
+  }
+
+  function spawnBurstHeart(h1){
+    const rect = h1.getBoundingClientRect();
+    const size = 64;
+    const wrap = document.createElement('div');
+    wrap.className = 'heart-wrap burst';
+    wrap.style.width = size + 'px';
+    wrap.style.height = size + 'px';
+    wrap.style.left = (rect.left + rect.width / 2) + 'px';
+    wrap.style.top = (rect.top + rect.height / 2) + 'px';
+    const inner = document.createElement('div');
+    inner.className = 'heart';
+    wrap.appendChild(inner);
+    document.body.appendChild(wrap);
+    setTimeout(() => wrap.remove(), 1700);
+  }
+
+  function initFalakHearts(){
+    const h1 = document.querySelector('.chart-core h1');
+    if (!h1) return;
+    let spawnTimer = null;
+
+    h1.addEventListener('mouseenter', () => {
+      h1.classList.add('loved');
+      spawnFloatingHeart(h1);
+      spawnTimer = setInterval(() => spawnFloatingHeart(h1), 220);
+    });
+
+    h1.addEventListener('mouseleave', () => {
+      h1.classList.remove('loved');
+      if (spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
+    });
+
+    h1.addEventListener('click', () => spawnBurstHeart(h1));
+  }
+
   function init(){
     buildStarField();
     buildMarquee();
     initScrollReveal();
+    initFalakHearts();
 
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
