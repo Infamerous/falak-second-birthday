@@ -139,23 +139,29 @@
     setTimeout(() => wrap.remove(), 1800);
   }
 
-  function spawnHeartBurst(){
-    const cols = 4, rows = 3;
-    const cellW = window.innerWidth / cols;
-    const cellH = window.innerHeight / rows;
-    const cells = [];
-    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) cells.push({ c, r });
-    for (let i = cells.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      const tmp = cells[i]; cells[i] = cells[j]; cells[j] = tmp;
+  function randomHeartPoint(exclude){
+    for (let attempt = 0; attempt < 20; attempt++){
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      if (!exclude) return { x, y };
+      const dx = x - exclude.cx, dy = y - exclude.cy;
+      if (Math.hypot(dx, dy) > exclude.radius) return { x, y };
     }
-    const count = Math.min(7, cells.length);
-    const pad = 0.28;
+    return { x: Math.random() * window.innerWidth, y: Math.random() < 0.5 ? 20 : window.innerHeight - 20 };
+  }
 
-    cells.slice(0, count).forEach((cell, i) => {
+  function spawnHeartBurst(){
+    const chart = document.querySelector('.chart');
+    let exclude = null;
+    if (chart){
+      const r = chart.getBoundingClientRect();
+      exclude = { cx: r.left + r.width / 2, cy: r.top + r.height / 2, radius: Math.max(r.width, r.height) / 2 + 24 };
+    }
+
+    const count = 7;
+    for (let i = 0; i < count; i++){
       setTimeout(() => {
-        const x = (cell.c + pad + Math.random() * (1 - 2 * pad)) * cellW;
-        const y = (cell.r + pad + Math.random() * (1 - 2 * pad)) * cellH;
+        const { x, y } = randomHeartPoint(exclude);
         const wrap = document.createElement('div');
         wrap.className = 'heart-wrap popping';
         const size = 42 + Math.random() * 22;
@@ -167,8 +173,8 @@
         wrap.innerHTML = heartSVG(true);
         document.body.appendChild(wrap);
         setTimeout(() => wrap.remove(), 1900);
-      }, i * 70);
-    });
+      }, Math.random() * 500);
+    }
   }
 
   function initFalakHearts(){
