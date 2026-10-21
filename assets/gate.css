@@ -6,6 +6,13 @@
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 
+html, body{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 body{
   background: var(--void); color: #F6F6F6;
   font-family: 'Inter', sans-serif;

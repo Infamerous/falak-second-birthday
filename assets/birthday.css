@@ -12,6 +12,13 @@
 
 *{ margin:0; padding:0; box-sizing:border-box; }
 
+html, body{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 @media (prefers-reduced-motion: reduce){
   *{ animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
 }
