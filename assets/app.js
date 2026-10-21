@@ -111,6 +111,9 @@
     if (heroChart) requestAnimationFrame(() => setTimeout(() => heroChart.classList.add('is-visible'), 80));
   }
 
+  const HEART_PATH = 'M32 50 C10 34 4 18 16 10 C24 5 32 10 32 16 C32 10 40 5 48 10 C60 18 54 34 32 50 Z';
+  let heartClipCounter = 0;
+
   function heartSVG(withFace){
     const face = withFace
       ? '<circle cx="24" cy="23" r="2.4" fill="var(--void)"/>'
@@ -118,9 +121,18 @@
         + '<path d="M28 31 Q32 36 36 31" stroke="var(--void)" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
       : '';
     return '<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">'
-      + '<path d="M32 50 C10 34 4 18 16 10 C24 5 32 10 32 16 C32 10 40 5 48 10 C60 18 54 34 32 50 Z" '
+      + '<path d="' + HEART_PATH + '" '
       + 'fill="var(--love)" stroke="var(--starlight)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'
       + face
+      + '</svg>';
+  }
+
+  function heartImageSVG(imgUrl){
+    const clipId = 'heartClip-' + (heartClipCounter++);
+    return '<svg viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">'
+      + '<defs><clipPath id="' + clipId + '" clipPathUnits="userSpaceOnUse"><path d="' + HEART_PATH + '"/></clipPath></defs>'
+      + '<image href="' + imgUrl + '" x="0" y="0" width="64" height="56" preserveAspectRatio="xMidYMid slice" clip-path="url(#' + clipId + ')"/>'
+      + '<path d="' + HEART_PATH + '" fill="none" stroke="var(--love)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>'
       + '</svg>';
   }
 
@@ -170,7 +182,8 @@
         wrap.style.left = x + 'px';
         wrap.style.top = y + 'px';
         wrap.style.setProperty('--drift', (Math.random() * 30 - 15) + 'px');
-        wrap.innerHTML = heartSVG(true);
+        const imgUrl = basePath + imageFiles[Math.floor(Math.random() * imageFiles.length)];
+        wrap.innerHTML = heartImageSVG(imgUrl);
         document.body.appendChild(wrap);
         setTimeout(() => wrap.remove(), 1900);
       }, Math.random() * 500);
