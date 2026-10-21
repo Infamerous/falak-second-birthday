@@ -1,0 +1,54 @@
+:root{
+  --void: #000000;
+  --brass: #FFFFFF;
+  --brass-dim: #555555;
+  --ink: #A0A0A0;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background: var(--void); color: #F6F6F6;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+
+.gate{ text-align: center; max-width: 320px; width: 100%; }
+
+.gate .eyebrow{
+  display: block; font-size: .7rem; letter-spacing: .32em;
+  text-transform: uppercase; color: var(--brass); margin-bottom: 1.1rem;
+}
+
+.gate h1{
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(1.9rem, 7vw, 2.5rem); margin-bottom: 1.8rem; line-height: 1.15;
+}
+
+.gate form{ display: flex; flex-direction: column; gap: .9rem; }
+
+.gate input{
+  background: transparent; border: 1px solid var(--brass-dim); color: #fff;
+  padding: .8rem 1rem; font-size: 1rem; letter-spacing: .08em; text-align: center;
+  border-radius: 2px; font-family: 'Inter', sans-serif;
+}
+.gate input:focus{ outline: none; border-color: var(--brass); }
+
+.gate button{
+  background: var(--brass); color: #000; border: none;
+  padding: .8rem 1rem; font-family: 'Inter', sans-serif; font-weight: 600;
+  letter-spacing: .15em; text-transform: uppercase; font-size: .72rem;
+  border-radius: 2px; cursor: pointer; transition: opacity .2s;
+}
+.gate button:hover{ opacity: .85; }
+
+.gate .error{
+  font-size: .78rem; color: var(--ink); min-height: 1.2em; margin-top: .3rem;
+}
+
+.gate.shake{ animation: shake .35s; }
+@keyframes shake{
+  0%, 100%{ transform: translateX(0); }
+  25%{ transform: translateX(-8px); }
+  75%{ transform: translateX(8px); }
+}
